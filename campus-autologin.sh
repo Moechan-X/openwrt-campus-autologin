@@ -42,13 +42,19 @@ have_curl() {
 	command -v curl >/dev/null 2>&1
 }
 
-# 在线检测: curl 返回 204 即在线; 无 curl 时用 ping 兜底
-is_online() {
+check_once() {
 	if have_curl; then
 		[ "$(curl -s -o /dev/null -m 6 -w '%{http_code}' "$CFG_CHECK" 2>/dev/null)" = "204" ]
 	else
 		ping -c1 -W3 223.5.5.5 >/dev/null 2>&1
 	fi
+}
+
+# 在线检测: 双次确认, 避免瞬时抖动 (如防火墙重载) 触发无效登录
+is_online() {
+	check_once && return 0
+	sleep 3
+	check_once
 }
 
 # 获取认证参数: 从重定向 Location 提取查询串, 失败则用固定模板
