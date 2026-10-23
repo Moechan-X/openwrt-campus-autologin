@@ -1,0 +1,6 @@
+#!/bin/sh
+# hotplug: WAN 口等接口 up 时立即触发一次登录检测 (后台执行, 不阻塞 netifd)
+
+[ "$ACTION" = "ifup" ] || exit 0
+
+/usr/bin/campus-autologin.sh --once >/dev/null 2>&1 &
