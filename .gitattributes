@@ -1,0 +1,2 @@
+# shell 脚本必须保持 LF, 否则在 OpenWrt 上无法执行 (shebang 带 \r 会损坏)
+* text=auto eol=lf
